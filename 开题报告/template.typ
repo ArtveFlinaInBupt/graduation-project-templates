@@ -1,32 +1,7 @@
+#import "../util.typ": *
+
 #let serif-font = ("Times New Roman", "Songti SC")
 #let sans-font = ("Helvetica", "Heiti SC")
-
-#let fp = v(-1.25em) + box()
-#let hfp = v(-.75em) + box()
-
-#let checkbox = (
-  empty: box(baseline: .2em, rect(width: 1em, height: 1em)),
-  checked: box(baseline: .2em, rect(width: 1em, height: 1em, sym.checkmark))
-)
-
-#let word-zihao-to-length = (
-  初号: 42pt,
-  小初: 36pt,
-  一号: 26pt,
-  小一: 24pt,
-  二号: 22pt,
-  小二: 18pt,
-  三号: 16pt,
-  小三: 15pt,
-  四号: 14pt,
-  小四: 12pt,
-  五号: 10.5pt,
-  小五: 9pt,
-  六号: 7.5pt,
-  小六: 6.5pt,
-  七号: 5.5pt,
-  八号: 5pt,
-)
 
 #let project(
   info: (
@@ -54,7 +29,13 @@
   ),
   body
 ) = {
-  set document()
+  let author-str = try-str(info.author.name)
+  let title-cn-str = try-str(info.title.cn)
+
+  set document(
+    author: author-str,
+    title: "本科毕业设计（论文）开题报告 - " + title-cn-str,
+  )
 
   set page(margin: (x: 3.54cm, y: 2.18cm))
 
@@ -64,11 +45,18 @@
   show heading.where(level: 2): set text(word-zihao-to-length.小四)
   show heading: it => strong(it) + hfp
 
-  set text(font: serif-font, size: word-zihao-to-length.五号)
+  set text(
+    font: serif-font,
+    size: word-zihao-to-length.五号,
+    lang: "zh",
+    region: "cn",
+  )
 
   set par(justify: true)
 
   show strong: it => text(weight: "black", it)
+
+  show bibliography: set heading(numbering: "1.1 ")
 
   show: align.with(center)
   show: block.with(width: 110%)
@@ -112,7 +100,7 @@
         body
       })),
       table.cell(colspan: 3)[允许进入毕业设计（论文）下一阶段：是 #if info.pass.whether { checkbox.checked } else { checkbox.empty } #h(.5em) 否 #if not info.pass.whether { checkbox.checked } else { checkbox.empty }],
-      table.cell(rowspan: 2)[指导教师签字], table.cell(colspan: 2, rowspan: 2, info.pass.signature),
+      table.cell(rowspan: 2)[指导教师\ 签字], table.cell(colspan: 2, rowspan: 2, info.pass.signature),
       [日期], table.cell(colspan: 2, info.pass.date),
     ),
     pad(top: -1em, align(left)[注：可根据开题报告的长度加页]),
